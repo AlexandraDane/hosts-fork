@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#6767
 check_ip() {
     local hostname="$1"
     local ip="$2"
