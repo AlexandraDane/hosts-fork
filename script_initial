@@ -1,0 +1,27 @@
+#!/bin/bash
+
+check_ip() {
+    local hostname="$1"
+    local ip="$2"
+    local dns_server="$3"
+
+    resolved_ip=$(dig @"$dns_server" +short A "$hostname" | head -n 1)
+
+    if [[ "$resolved_ip" == "$ip" ]]; then
+        echo "Valid: $hostname -> $ip"
+        return 0
+    else
+        echo "Invalid: $hostname -> $ip (DNS: $resolved_ip)"
+        return 1
+    fi
+}
+
+DNS_SERVER="8.8.8.8"
+
+while read -r ip hostname rest; do
+    [[ -z "$ip" || "$ip" == \#* ]] && continue
+
+    check_ip "$hostname" "$ip" "$DNS_SERVER"
+
+done < /etc/hosts
+
